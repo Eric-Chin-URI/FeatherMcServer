@@ -1,0 +1,15 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region <your-region> | docker login --username AWS --password-stdin <account-id>.dkr.ecr.<your-region>.amazonaws.com
+  build:
+    commands:
+      - echo Building the Docker image...
+      - docker build -t feather-server .
+      - docker tag feather-server:latest <account-id>.dkr.ecr.<your-region>.amazonaws.com/feather-server:latest
+  post_build:
+    commands:
+      - echo Pushing the Docker image...
+      - docker push <account-id>.dkr.ecr.<your-region>.amazonaws.com/feather-server:latest
